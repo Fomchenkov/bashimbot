@@ -31,10 +31,9 @@ def get_random_quote():
 
 @bot.message_handler(commands=['start'])
 def cmd_start(message):
-	text = "Этот бот выдает рандомные цитати с сайта bash.im\n"
-	text += "Отпрвьте мне команду /quote, что бы получить цитату."
-	bot.send_message(message.chat.id, text)
-	return
+	text = "Привет!\nЯ умею выдавать рандомные цитати с сайта bash.im\n"
+	text += "Отправьте мне команду /quote, что бы получить цитату."
+	return bot.send_message(message.chat.id, text)
 
 
 @bot.message_handler(commands=["quote"])
