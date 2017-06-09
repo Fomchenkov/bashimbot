@@ -8,8 +8,7 @@
 Что бы получить еще цитату - нажмите на соответствующую кнопку внизу сообщения.
 ### __Удачного использования!__
 
-
-  if True:
-    print("Hello World!")
-
-ofogog
+```pyhton
+def hello(name):
+    print("Hello {}".format(name))
+```
