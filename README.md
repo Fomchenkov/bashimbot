@@ -1,4 +1,4 @@
-# [bash.im](http://bash.im/) Telegram Bot
+# [Bash.im](http://bash.im/) Telegram Bot
 
 ### Простой бот, который умеет выдавать рандомные цитаты с сайта bash.im
 
