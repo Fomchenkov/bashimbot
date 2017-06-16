@@ -9,8 +9,7 @@ import requests
 from bs4 import BeautifulSoup
 
 
-# BOT_TOKEN = '381586800:AAHlB90JpJlvnp_pVYNvbgnfuE5l-OGHf_Y' # Your bot token
-BOT_TOKEN = '387480715:AAGE4QwIkF6OaTaCln8vB4eAWPwD8Nes_fM'
+BOT_TOKEN = '381586800:AAHlB90JpJlvnp_pVYNvbgnfuE5l-OGHf_Y' # Your bot token
 
 bot = telebot.TeleBot(BOT_TOKEN)
 random.seed()
