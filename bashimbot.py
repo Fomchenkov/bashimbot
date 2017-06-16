@@ -9,7 +9,8 @@ import requests
 from bs4 import BeautifulSoup
 
 
-BOT_TOKEN = '381586800:AAHlB90JpJlvnp_pVYNvbgnfuE5l-OGHf_Y' # Your bot token
+# BOT_TOKEN = '381586800:AAHlB90JpJlvnp_pVYNvbgnfuE5l-OGHf_Y' # Your bot token
+BOT_TOKEN = '387480715:AAGE4QwIkF6OaTaCln8vB4eAWPwD8Nes_fM'
 
 bot = telebot.TeleBot(BOT_TOKEN)
 random.seed()
@@ -59,6 +60,16 @@ def callback_inline(call):
 				chat_id=call.message.chat.id, 
 				message_id=call.message.message_id, 
 				text=text, reply_markup=keyboard, parse_mode="html")
+
+
+@bot.inline_handler(func=lambda query: len(query.query) > 0)
+def query_text(query):
+	random_quote = types.InlineQueryResultArticle(
+		id="1", title="Рандомная цитата",
+		description="Нажмите, что бы получить цитату",
+		input_message_content=types.InputTextMessageContent(get_random_quote())
+	)
+	return bot.answer_inline_query(query.id, [random_quote])
 
 
 if __name__ == '__main__':
