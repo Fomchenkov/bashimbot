@@ -1,18 +1,34 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-import telebot
-from telebot import types
 import re
 import random
+import time
+
 import requests
+import flask
+import telebot
+from telebot import types
 from bs4 import BeautifulSoup
 
 
-BOT_TOKEN = '381586800:AAHjC-gr2_kOziv1Rpto6tL1BnC33iPzL0I' # Your bot token
+BOT_TOKEN = '381586800:AAHjC-gr2_kOziv1Rpto6tL1BnC33iPzL0I'
 
-bot = telebot.TeleBot(BOT_TOKEN)
+WEBHOOK_HOST = '89.223.27.217'
+WEBHOOK_PORT = 443
+WEBHOOK_LISTEN = '0.0.0.0'
+
+WEBHOOK_SSL_CERT = './webhook_cert.pem'
+WEBHOOK_SSL_PRIV = './webhook_pkey.pem'
+
+
+WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
+WEBHOOK_URL_PATH = "/%s/" % (BOT_TOKEN)
+
 random.seed()
+
+app = flask.Flask(__name__)
+bot = telebot.TeleBot(BOT_TOKEN)
 
 
 def get_random_quote():
@@ -27,6 +43,17 @@ def get_random_quote():
 	text = re.sub(re.compile('<br>'), '\n', text)
 	text = re.sub(re.compile('<.*?>'), '', text)
 	return url + "\n\n" + text
+
+
+@app.route(WEBHOOK_URL_PATH, methods=['POST'])
+def webhook():
+	if flask.request.headers.get('content-type') == 'application/json':
+		json_string = flask.request.get_data().decode('utf-8')
+		update = telebot.types.Update.de_json(json_string)
+		bot.process_new_updates([update])
+		return ''
+	else:
+		flask.abort(403)
 
 
 @bot.message_handler(commands=['start'])
@@ -72,4 +99,10 @@ def query_text(query):
 
 
 if __name__ == '__main__':
-	bot.polling(none_stop=True)
+	print("[Bot started]")
+	bot.remove_webhook()
+	time.sleep(1)
+	bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
+					certificate=open(WEBHOOK_SSL_CERT, 'r'))
+	app.run(host=WEBHOOK_LISTEN, port=WEBHOOK_PORT,
+			ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV))
