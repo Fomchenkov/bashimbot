@@ -15,7 +15,7 @@ from bs4 import BeautifulSoup
 BOT_TOKEN = '381586800:AAHjC-gr2_kOziv1Rpto6tL1BnC33iPzL0I'
 
 WEBHOOK_HOST = '89.223.27.217'
-WEBHOOK_PORT = 443
+WEBHOOK_PORT = 8443
 WEBHOOK_LISTEN = '0.0.0.0'
 
 WEBHOOK_SSL_CERT = './webhook_cert.pem'
@@ -40,8 +40,8 @@ def get_random_quote():
 	response = requests.get(url)
 	soup = BeautifulSoup(response.text, 'html.parser')
 	text = str(soup.find("div", class_="text"))
-	text = re.sub(re.compile('<br>'), '\n', text)
-	text = re.sub(re.compile('<.*?>'), '', text)
+	text = re.sub('<br>', '\n', text)
+	text = re.sub('<.*?>', '', text)
 	return url + "\n\n" + text
 
 
