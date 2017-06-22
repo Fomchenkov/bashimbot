@@ -4,6 +4,7 @@
 import re
 import random
 import time
+import sys
 
 import requests
 import flask
@@ -12,7 +13,7 @@ from telebot import types
 from bs4 import BeautifulSoup
 
 
-BOT_TOKEN = '381586800:AAHjC-gr2_kOziv1Rpto6tL1BnC33iPzL0I'
+BOT_TOKEN = sys.argv[1]
 
 WEBHOOK_HOST = '89.223.27.217'
 WEBHOOK_PORT = 8443
