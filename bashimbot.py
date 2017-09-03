@@ -14,8 +14,9 @@ from bs4 import BeautifulSoup
 
 
 BOT_TOKEN = sys.argv[1]
+IS_WEBHOOK = False
 
-WEBHOOK_HOST = '89.223.27.217'
+WEBHOOK_HOST = '89.223.25.123'
 WEBHOOK_PORT = 8443
 WEBHOOK_LISTEN = '0.0.0.0'
 
@@ -23,8 +24,8 @@ WEBHOOK_SSL_CERT = './webhook_cert.pem'
 WEBHOOK_SSL_PRIV = './webhook_pkey.pem'
 
 
-WEBHOOK_URL_BASE = "https://%s:%s" % (WEBHOOK_HOST, WEBHOOK_PORT)
-WEBHOOK_URL_PATH = "/%s/" % (BOT_TOKEN)
+WEBHOOK_URL_BASE = "https://{!s}:{!s}".format(WEBHOOK_HOST, WEBHOOK_PORT)
+WEBHOOK_URL_PATH = "/{!s}/".format(BOT_TOKEN)
 
 random.seed()
 
@@ -100,10 +101,22 @@ def query_text(query):
 
 
 if __name__ == '__main__':
-	print("[Bot started]")
 	bot.remove_webhook()
 	time.sleep(1)
-	bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
-					certificate=open(WEBHOOK_SSL_CERT, 'r'))
-	app.run(host=WEBHOOK_LISTEN, port=WEBHOOK_PORT,
-			ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV))
+
+	if IS_WEBHOOK:
+		bot.set_webhook(url=WEBHOOK_URL_BASE+WEBHOOK_URL_PATH,
+						certificate=open(WEBHOOK_SSL_CERT, 'r'))
+		app.run(host=WEBHOOK_LISTEN, port=WEBHOOK_PORT,
+				ssl_context=(WEBHOOK_SSL_CERT, WEBHOOK_SSL_PRIV))
+	else:
+		while True:
+			try:
+				bot.polling(none_stop=True, interval=0)
+			except ConnectionError as e:
+				print('Connection lost...')
+				time.sleep(30)
+				continue
+			except KeyError as e:
+				print('Bot stoped...')
+				break
